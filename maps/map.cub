@@ -1,0 +1,14 @@
+  NO ./texture/place_holder_no
+  EA ./texture/place_holder_ea
+  SO    ./texture/placeholder_so
+  WE  ./texture/placeholder_we
+
+F 255, 255,0
+C 255,255,   0
+
+
+11111111
+10000001
+10000001
+100000N1
+11111111
