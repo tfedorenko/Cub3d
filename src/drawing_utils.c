@@ -6,7 +6,7 @@
 /*   By: tfedoren <tfedoren@student.42wolfsburg.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 17:13:29 by tfedoren          #+#    #+#             */
-/*   Updated: 2022/12/19 16:04:30 by tfedoren         ###   ########.fr       */
+/*   Updated: 2022/12/20 16:59:22 by tfedoren         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,3 +130,56 @@ void perform_DDA(t_cub3d *cub3d, int map[24][24])
 	
 // }
 
+void draw_square(t_img_data *img, int scl, int color, int i, int j)
+{
+	// int i;
+	// int j;
+	// i = 0;
+	// j = 0;
+	// int count = 0;
+	i *= scl;
+	j *= scl;
+	
+	int w = i;
+	int h = j;
+	while(i <= w + scl)
+	{
+		// my_mlx_pixel_put(img, i, j ,color);
+		while (j <= h + scl)
+		{
+			// printf (" count = %d", count);
+			// count++;
+			my_mlx_pixel_put(img, i, j ,color);
+			j++;
+		}
+			// printf("Am I here?\n"); 
+		i++;
+		my_mlx_pixel_put(img, i, j ,color);
+	}
+}
+
+void draw_minimap(int map[24][24], t_img_data *img)
+{
+	int i;
+	int j;
+	i = 0;
+	while(i < mapWidth)
+	{
+		j = 0;
+		while(j < mapHeight)
+		{
+			if(map[i][j] == 1)
+			{
+				draw_square(img, 10, 0x3C33FF, i, j);
+				
+			}
+			if(map[i][j] == 0)
+			{
+				draw_square(img, 10, 0xD5D8DC, i, j);
+			}
+			j++;
+		}
+		i++;
+	}
+	
+}

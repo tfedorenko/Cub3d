@@ -36,6 +36,8 @@ int loop_render(void *ptr)
 	cub3d->img_data.mlx_img_addr = mlx_get_data_addr(cub3d->img_data.img_ptr, &cub3d->img_data.bits_per_pixel, &cub3d->img_data.line_len,
 						&cub3d->img_data.endian);
 	render(cub3d, &cub3d->img_data,  map);
+	render_minimap(cub3d, &cub3d->img_data,  map);
+	
 	return 0;
 }
 
@@ -64,6 +66,13 @@ void render(t_cub3d *cub3d, t_img_data *img, int map[24][24])
 	mlx_put_image_to_window(cub3d->mlx, cub3d->mlx_win, img->img_ptr, 0, 0);
 }
 
+void render_minimap(t_cub3d *cub3d, t_img_data *img, int map[24][24])
+{
+	draw_minimap(map, img);
+
+	mlx_put_image_to_window(cub3d->mlx, cub3d->mlx_win, img->img_ptr, 0, 0);
+
+}
 
 void raycaster(t_cub3d *cub3d, int map[24][24])
 {
