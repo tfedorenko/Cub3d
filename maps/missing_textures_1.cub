@@ -1,0 +1,11 @@
+
+EA ./texture/red_bricks.xpm
+WE  ./texture/dark_prismarine.xpm
+SO  ./texture/note_block.xpm
+
+F 255,255,255
+C 255,255,255
+
+111
+1N1
+111

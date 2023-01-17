@@ -1,94 +1,87 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dnguyen <dnguyen@student.42wolfsburg.de    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/05 18:57:19 by tfedoren          #+#    #+#             */
+/*   Updated: 2023/01/06 10:32:17 by dnguyen          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
-int map[mapWidth][mapHeight]=
-	{
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,4,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-	};
-	
-int loop_render(void *ptr)
+int	cal_render(void *ptr)
 {
-	t_cub3d *cub3d = (t_cub3d *) ptr;
-	mlx_clear_window(cub3d->mlx, cub3d->mlx_win);
-	cub3d->img_data.img_ptr = mlx_new_image(cub3d->mlx, WIDTH, HEIGHT);
-	cub3d->img_data.mlx_img_addr = mlx_get_data_addr(cub3d->img_data.img_ptr, &cub3d->img_data.bits_per_pixel, &cub3d->img_data.line_len,
-						&cub3d->img_data.endian);
-	render(cub3d, &cub3d->img_data,  map);
-	render_minimap(cub3d, &cub3d->img_data,  map);
-	
-	return 0;
+	t_info	*info;
+
+	info = (t_info *) ptr;
+	mlx_clear_window(info->mlx, info->mlx_win);
+	info->img_data.img_ptr = mlx_new_image(info->mlx, WIDTH, HEIGHT);
+	info->img_data.mlx_img_addr = mlx_get_data_addr(info->img_data.img_ptr, \
+		&info->img_data.bits_per_pixel, &info->img_data.line_len, \
+			&info->img_data.endian);
+	render(&info->img_data, info);
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	t_cub3d *cub3d;
+	t_info	*info;
 
-	(void)argv;
-	(void)argc;
-	cub3d = malloc(sizeof(t_cub3d));
-	init(cub3d);
-	cub3d->mlx = mlx_init();
-	cub3d->mlx_win = mlx_new_window(cub3d->mlx, WIDTH, HEIGHT, "Our amazing project");
-	mlx_loop_hook(cub3d->mlx, loop_render, cub3d);
-	mlx_key_hook(cub3d->mlx_win, deal_key, cub3d);
-	mlx_hook(cub3d->mlx_win, 2, 0, deal_key, cub3d);
-	mlx_hook(cub3d->mlx_win, 17, 0, x_close, cub3d);
-	mlx_loop(cub3d->mlx);	
+	info = malloc(sizeof(t_info));
+	if (argc < 2)
+		exit_msg_error("Error: Map argument is wrong.\n");
+	set_info_1(info);
+	error_check(argv[1], info);
+	init(info);
+	init_start_position(info);
+	info->mlx = mlx_init();
+	info->mlx_win = mlx_new_window(info->mlx, WIDTH, HEIGHT, \
+		"Our amazing project");
+	cal_render(info);
+	mlx_hook(info->mlx_win, 2, 0, deal_key, info);
+	mlx_hook(info->mlx_win, 17, 0, x_close, info);
+	mlx_loop(info->mlx);
 	return (0);
 }
 
-
-void render(t_cub3d *cub3d, t_img_data *img, int map[24][24])
+void	render(t_img_data *img, t_info *info)
 {
-	raycaster(cub3d, map);
-	mlx_put_image_to_window(cub3d->mlx, cub3d->mlx_win, img->img_ptr, 0, 0);
+	raycaster(info);
+	mlx_put_image_to_window(info->mlx, info->mlx_win, img->img_ptr, 0, 0);
 }
 
-void render_minimap(t_cub3d *cub3d, t_img_data *img, int map[24][24])
+double	smth(double target, double possible, double number)
 {
-	draw_minimap(map, img);
-
-	mlx_put_image_to_window(cub3d->mlx, cub3d->mlx_win, img->img_ptr, 0, 0);
-
+	if (target + possible > number && target - possible < number)
+		return (target);
+	return (number);
 }
 
-void raycaster(t_cub3d *cub3d, int map[24][24])
+void	raycaster(t_info *info)
 {
-	int i;
+	int	i;
+
 	i = 0;
-	while(i++ < WIDTH)
+	while (i < WIDTH)
 	{
-		ray_handler(cub3d, i / 4);
-		perform_DDA(cub3d, map);
-		cub3d->lineHeight = (int)(HEIGHT / cub3d->perpWallDist);
-		cub3d->drawStart = (-cub3d->lineHeight / 2 + HEIGHT / 2);
-		if (cub3d->drawStart < 0)
-			cub3d->drawStart = 0;
-		cub3d->drawEnd = cub3d->lineHeight / 2 + HEIGHT / 2;
-		if (cub3d->drawEnd >= HEIGHT)
-			cub3d->drawEnd = HEIGHT -1;
-		draw_line(cub3d, WIDTH - i - 1, 0x000000FF, &cub3d->img_data);
+		ray_handler(info, i);
+		perform_dda(info);
+		info->perp_wall_dist = smth(0, 0.001, info->perp_wall_dist);
+		if (info->perp_wall_dist == 0)
+			info->draw_end = HEIGHT;
+		else
+			info->line_height = (int)(HEIGHT / info->perp_wall_dist);
+		info->draw_start = (-info->line_height / 2 + HEIGHT / 2);
+		if (info->draw_start < 0)
+			info->draw_start = 0;
+		info->draw_end = info->line_height / 2 + HEIGHT / 2;
+		if (info->draw_end >= HEIGHT)
+			info->draw_end = HEIGHT - 1;
+		texturing(info);
+		draw_line(info, WIDTH - i - 1, &info->img_data);
+		i++;
 	}
 }

@@ -1,14 +1,17 @@
-  NO ./texture/place_holder_no
-  EA ./texture/place_holder_ea
-  SO    ./texture/placeholder_so
-  WE  ./texture/placeholder_we
+NO ./texture/bricksx64_mod.xpm
+EA ./texture/red_bricks.xpm
+WE  ./texture/dark_prismarine.xpm
+SO  ./texture/note_block.xpm
 
-F 255, 255,0
-C 255,255,   0
+F 62,55,50
+C 228,131,167
 
-
-11111111
-10000001
-10000001
-100000N1
-11111111
+111111111
+101000011
+100010011
+100001001
+100000011
+1000E0011
+110000011
+100001011
+111111111

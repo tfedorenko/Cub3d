@@ -1,75 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit_and_close.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tfedoren <tfedoren@student.42wolfsburg.de> +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/05 14:59:59 by tfedoren          #+#    #+#             */
+/*   Updated: 2023/01/06 16:38:56 by tfedoren         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
-int	x_close(t_cub3d *cub3d)
+int	x_close(t_info *info)
 {
-	mlx_destroy_window(cub3d->mlx, cub3d->mlx_win);
-	// free(cub3d);
+	mlx_destroy_window(info->mlx, info->mlx_win);
+	free(info);
 	exit(0);
 }
 
-int	deal_key(int key, t_cub3d *cub3d, int map[24][24])
+/*  key 53 = esc;
+	key 126 or 13 = w or arrow up
+	key 125 or 1 = s or arrow down
+	key 0 = a
+	key 2 = d
+	key 123 = arrow left
+	key 124 = arrow right*/
+static void	key_w(t_info *info)
 {
-	double oldDirX;
-	double oldPlaneX;
-
-	oldPlaneX = cub3d->planeX;
-	oldDirX = cub3d->dirX;
-
-	if (key == 53) // esc
-	{
-		mlx_destroy_window(cub3d->mlx, cub3d->mlx_win);
-		exit(1);
-	}
-	if(key == 126) // key up
-	{
-		if(!(map[(int)(cub3d->posX + cub3d->dirX * moveSpeed)][(int)(cub3d->posY + cub3d->dirY * moveSpeed)]) && !map_borders(cub3d))
-		{
-			cub3d->posY += moveSpeed * cub3d->dirY;
-			printf("Am I here? cub3d->posY = %i\n", (int)cub3d->posY);
-			cub3d->posX += moveSpeed * cub3d->dirX;
-			printf("Am I here? cub3d->posX = %i\n", (int)cub3d->posX);
-		}
-		// if
-		// {
-			
-		// }
-	}
-
-	if(key == 125) // key down
-	{	
-		if(!(map[(int)(cub3d->posX - cub3d->dirX *moveSpeed)][(int)(cub3d->posY - cub3d->dirY * moveSpeed)]) && !map_borders(cub3d))
-		{
-			cub3d->posX -= moveSpeed * cub3d->dirX;
-			cub3d->posY -= moveSpeed * cub3d->dirY;
-
-		}
-		// if(!(map[(int)(cub3d->posX)][(int)(cub3d->posY - cub3d->dirY * moveSpeed)]) && !map_borders(cub3d))
-	}
-
-	if(key == 123) // key right
-	{	
-		cub3d->dirX = cub3d->dirX * cos(-rotSpeed) - cub3d->dirY * sin(-rotSpeed);
-		cub3d->dirY = oldDirX * sin(-rotSpeed) + cub3d->dirY * cos(-rotSpeed);
-
-		cub3d->planeX = cub3d->planeX * cos(-rotSpeed) - cub3d->planeY * sin(-rotSpeed);
-		cub3d->planeY = oldPlaneX * sin(-rotSpeed) + cub3d->planeY * cos(-rotSpeed);
-	}
-
-	if(key == 124) // key right
-	{	
-		cub3d->dirX = cub3d->dirX * cos(rotSpeed) - cub3d->dirY * sin(rotSpeed);
-		cub3d->dirY = oldDirX * sin(rotSpeed) + cub3d->dirY * cos(rotSpeed);
-		cub3d->planeX = cub3d->planeX * cos(rotSpeed) - cub3d->planeY * sin(rotSpeed);
-		cub3d->planeY = oldPlaneX * sin(rotSpeed) + cub3d->planeY * cos(rotSpeed);
-	}
-
-	return (0);
-
+	info->pos_y += MOVESPEED * info->dir_y;
+	info->pos_x += MOVESPEED * info->dir_x;
 }
 
-int map_borders(t_cub3d *cub3d)
+static void	key_s(t_info *info)
 {
-	if ((cub3d->posX + moveSpeed * cub3d->dirX > 0) && (cub3d->posY + moveSpeed * cub3d->dirY  > 0) && (cub3d->posX + moveSpeed * cub3d->dirX < mapWidth) && (cub3d->posY + moveSpeed * cub3d->dirY < mapHeight))
-		return (0);
-	return (1);
-} 
+	info->pos_x -= MOVESPEED * info->dir_x;
+	info->pos_y -= MOVESPEED * info->dir_y;
+}
+
+static void	deal_moves(int key, t_info *info)
+{
+	if ((key == 126 || key == 13) && no_collision_up_and_down(info, key))
+	{
+		key_w(info);
+		cal_render(info);
+	}
+	else if ((key == 125 || key == 1) && no_collision_up_and_down(info, key))
+	{	
+		key_s(info);
+		cal_render(info);
+	}
+	else if (key == 0 && no_collision_right_and_left(info, key))
+	{	
+		key_a(info);
+		cal_render(info);
+	}
+	else if (key == 2 && no_collision_right_and_left(info, key))
+	{
+		key_d(info);
+		cal_render(info);
+	}
+}
+
+int	deal_key(int key, t_info *info)
+{
+	info->perp_dir_x = info->dir_y;
+	info->perp_dir_y = info->dir_x * -1;
+	if (key == 53)
+	{
+		mlx_destroy_window(info->mlx, info->mlx_win);
+		free(info);
+		exit(1);
+	}
+	else if (key == 126 || key == 13 || key == 125 || key == 1 || \
+		key == 0 || key == 2)
+	{
+		deal_moves(key, info);
+	}
+	else if (key == 123)
+	{	
+		rotate_left(info);
+		cal_render(info);
+	}
+	else if (key == 124)
+	{	
+		rotate_right(info);
+		cal_render(info);
+	}
+	return (0);
+}
